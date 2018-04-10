@@ -1,0 +1,9 @@
+# Provide AWS credentials
+aws.accessKeyId=
+aws.secretKey=
+aws.region=
+
+# copy this block (incrementing the index in square backets) for each route
+queues.routes[0].incoming-arn=
+queues.routes[0].outgoing-arn=
+queues.routes[0].reply-arn=

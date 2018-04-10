@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="1" author="candrews">
+  	<createSequence sequenceName="hibernate_sequence" />
+  	<createTable tableName="pending_reply">
+  		<column name="id" type="uuid">
+  			<constraints primaryKey="true" nullable="false" />
+  		</column>
+  		<column name="jms_correlation_id" type="varchar(2048)">
+  			<constraints nullable="false" checkConstraint="len(name) &gt; 0" />
+  		</column>
+  		<column name="receive_reply_on_queue_arn" type="varchar(2048)">
+  			<constraints nullable="false" checkConstraint="len(name) &gt; 0" />
+  		</column>
+  		<column name="send_reply_to_queue_arn" type="varchar(2048)">
+  			<constraints nullable="false" checkConstraint="len(name) &gt; 0" />
+  		</column>
+  		<column name="created" type="datetime">
+  			<constraints nullable="false" checkConstraint="created &lt;= CURRENT_TIMESTAMP" />
+  		</column>
+  	</createTable>
+  	<createIndex tableName="pending_reply" indexName="ix_pending_reply_1" unique="true">
+  		<column name="jms_correlation_id"></column>
+  		<column name="receive_reply_on_queue_arn"></column>
+  	</createIndex>
+  </changeSet>
+</databaseChangeLog>

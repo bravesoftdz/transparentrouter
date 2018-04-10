@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layouts/global}">
+<head>
+	<title>Welcome</title>
+</head>
+<body>
+<section layout:fragment="content">
+	There are currently <span th:text="${pendingReplyCount}"></span> messages pending reply.
+</section>
+</body>
+</html>

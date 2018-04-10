@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	name="M2Eclipse PMD RuleSet"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>PMD RuleSet</description>
+	<rule ref="category/java/bestpractices.xml">
+		<exclude name="AccessorMethodGeneration" />
+		<exclude name="GuardLogStatement" />
+	</rule>
+	<rule ref="category/java/codestyle.xml">
+		<exclude name="AtLeastOneConstructor" />
+		<exclude name="OnlyOneReturn" />
+		<exclude name="LongVariable" />
+	</rule>
+	<rule ref="category/java/design.xml">
+		<exclude name="LawOfDemeter" />
+	</rule>
+	<rule ref="category/java/documentation.xml">
+	</rule>
+	<rule ref="category/java/errorprone.xml">
+		<exclude name="AvoidLiteralsInIfCondition" />
+		<exclude name="BeanMembersShouldSerialize" />
+		<exclude name="DataflowAnomalyAnalysis" />
+	</rule>
+	<rule ref="category/java/multithreading.xml">
+		<exclude name="DoNotUseThreads" />
+	</rule>
+	<rule ref="category/java/performance.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
+	</rule>
+	<rule ref="category/java/documentation.xml/CommentRequired">
+		<properties>
+			<property name="accessorCommentRequirement" value="Ignored" />
+			<property name="fieldCommentRequirement" value="Ignored" />
+			<property name="publicMethodCommentRequirement" value="Ignored" />
+		</properties>
+	</rule>
+	<rule ref="category/java/documentation.xml/CommentSize">
+		<properties>
+			<property name="maxLines" value="2000" />
+			<property name="maxLineLength" value="150" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/NcssCount">
+		<properties>
+			<property name="methodReportLevel" value="25" />
+		</properties>
+	</rule>
+</ruleset>
