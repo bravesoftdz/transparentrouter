@@ -35,7 +35,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Immutable // can be inserted, but not updated or deleted
 @Table
 public class PendingReply {
-	private final static String ARN_REGEX = "^arn:aws:sqs:(?<region>.+?):(?<accountId>.+?):(?<queuename>.+)$";
+	private final static String ARN_REGEX = "^arn:(?<partition>.+?):sqs:(?<region>.+?):(?<accountId>.+?):(?<queuename>.+)$";
 
 	@Id
 	@GeneratedValue(generator = "uuid2")

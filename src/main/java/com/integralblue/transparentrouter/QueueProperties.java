@@ -52,7 +52,7 @@ public class QueueProperties {
 	@Setter
 	@Validated
 	public static class RouteConfiguration {
-		private final static String ARN_REGEX = "^arn:aws:sqs:(?<region>.+?):(?<accountId>.+?):(?<queuename>.+)$";
+		private final static String ARN_REGEX = "^arn:(?<partition>.+?):sqs:(?<region>.+?):(?<accountId>.+?):(?<queuename>.+)$";
 		private final static String ARN_INVALID_MESSAGE = "Invalid SQS ARN";
 
 		/**
