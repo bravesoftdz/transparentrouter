@@ -28,7 +28,7 @@ Transparent Router:
     1. Provide the region using any AWS Java SDK supported method: environment variables, system properties, profile, or instance metadata (when running inside AWS)
     1. Provide credentials to access the queues using any AWS Java SDK supported method: environment variables, system properties, profile, or instance metadata (when running inside AWS)
     1. Get the JDBC driver jar (for example, `ojdbc8.jar` for Oracle)
-    1. Run the jar and include the JDBC driver : `java -cp ojdbc.jar -jar target/transparentrouter-*.jar`
+    1. Run the jar and include the JDBC driver : `java -cp "ojdbc8.jar:transparentrouter-0.0.1-SNAPSHOT.jar" "org.springframework.boot.loader.JarLauncher"`
 
 At startup, the required database databases, indexes, and constraints will be created if they don't already exist.
 
