@@ -13,6 +13,8 @@ Transparent Router:
 1. Looks up the value of the message's `JMSCorrelationID` message property to see where to forward message (using the `JMSMessageID`/`JMSCorrelationID` and `ReplyToQueueArn` of a previously received message)
 1. Sends that message to the `ReplyToQueueArn`
 
+`JMSCorrelationID`, `JMSMessageID`, and `ReplyToQueueArn` are the default attribute names. These names can be changed by setting `message.attribute-names.jms-correlation-id`, `message.attribute-names.jms-message-id`, and/or `message.attribute-names.reply-to-queue-arn`, respectively, in application.properties.
+
 # Running on a Server
 1. Run `./mvnw package` to create the jar at `target/transparentrouter-*.jar`
 1. Copy the jar to the server

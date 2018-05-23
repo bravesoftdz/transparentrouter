@@ -34,8 +34,8 @@ public class ReplySqsMessageListener extends AbstractSqsMessageListener {
 	public void onMessage(final @NonNull Message message, final @NonNull RouteConfiguration routeConfiguration) {
 		// the message was received on the routeConfiguration.replyArn queue
 
-		if (isMessageAttributeValueValidString(message, JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME)) {
-			final String jmsCorrelationId = message.getMessageAttributes().get(JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		if (isMessageAttributeValueValidString(message, messageAttributeProperties.getJmsCorrelationId())) {
+			final String jmsCorrelationId = message.getMessageAttributes().get(messageAttributeProperties.getJmsCorrelationId()).getStringValue();
 			final Optional<PendingReply> optionalPendingReply = pendingReplyRepository.findByJmsCorrelationIdAndReceiveReplyOnQueueArn(jmsCorrelationId, routeConfiguration.getReplyArn());
 			if (optionalPendingReply.isPresent()) {
 				final PendingReply pendingReply = optionalPendingReply.get();
@@ -52,7 +52,7 @@ public class ReplySqsMessageListener extends AbstractSqsMessageListener {
 			}
 		}
 		else {
-			log.warn(JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME + " not present. There is no way to know where to send this message; it is being dropped. SQS Message ID: {}", message.getMessageId());
+			log.warn(messageAttributeProperties.getJmsCorrelationId() + " not present. There is no way to know where to send this message; it is being dropped. SQS Message ID: {}", message.getMessageId());
 		}
 	}
 

@@ -2,9 +2,11 @@ package com.integralblue.transparentrouter.sqsmessagelistener;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.integralblue.transparentrouter.properties.MessageAttributeProperties;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 /** Helpful base for {@link SqsMessageListener} implementations.
@@ -14,9 +16,8 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public abstract class AbstractSqsMessageListener implements SqsMessageListener {
 
-	protected static final String JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME = "JMSCorrelationID";
-	protected static final String JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME = "JMSMessageID";
-	protected static final String JMS_REPLY_TO_ARN_ATTRIBUTE_NAME = "ReplyToQueueArn";
+	@Autowired
+	protected MessageAttributeProperties messageAttributeProperties;
 
 	/** Does {@link Message#getMessageAttributes()} contain a {@link MessageAttributeValue} with the given name and a non-blank string value?
 	 * @param message the message to inspect

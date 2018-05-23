@@ -16,6 +16,7 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.integralblue.transparentrouter.QueueProperties.RouteConfiguration;
 import com.integralblue.transparentrouter.aws.ExtendedAmazonSQS;
 import com.integralblue.transparentrouter.entity.PendingReply;
+import com.integralblue.transparentrouter.properties.MessageAttributeProperties;
 import com.integralblue.transparentrouter.repository.PendingReplyRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,9 @@ public class RouteTest {
 	private QueueProperties queueProperties;
 
 	@Autowired
+	private MessageAttributeProperties messageAttributeProperties;
+
+	@Autowired
 	private ExtendedAmazonSQS amazonSQS;
 
 	@Value("${test.queues}")
@@ -51,6 +55,9 @@ public class RouteTest {
 
 	@Test
 	public void sendMessagePendingReplyCreated() throws Exception {
+		final String jmsMessageIdPropertyName = messageAttributeProperties.getJmsMessageId();
+		final String jmsCorrelationIdPropertyName = messageAttributeProperties.getJmsCorrelationId();
+		final String replyToQueueArnPropertyName = messageAttributeProperties.getReplyToQueueArn();
 		final int routeConfigurationIndex = 0;
 		final RouteConfiguration routeConfiguration = queueProperties.getRoutes()[routeConfigurationIndex];
 		final String testQueue = testQueues[routeConfigurationIndex];
@@ -62,8 +69,8 @@ public class RouteTest {
 
 			amazonSQS.sendMessage(new SendMessageRequest()
 					.withQueueUrl(amazonSQS.getQueueUrlFromArn(routeConfiguration.getIncomingArn()).getQueueUrl())
-					.addMessageAttributesEntry("JMSMessageID", new MessageAttributeValue().withDataType("String").withStringValue(jmsMessageID))
-					.addMessageAttributesEntry("ReplyToQueueArn", new MessageAttributeValue().withDataType("String").withStringValue(testQueue))
+					.addMessageAttributesEntry(jmsMessageIdPropertyName, new MessageAttributeValue().withDataType("String").withStringValue(jmsMessageID))
+					.addMessageAttributesEntry(replyToQueueArnPropertyName, new MessageAttributeValue().withDataType("String").withStringValue(testQueue))
 					.withMessageBody(outgoingMessageBody)
 					);
 
@@ -79,9 +86,9 @@ public class RouteTest {
 			Message outgoingMessage = receiveOutgoingMessageResult.getMessages().get(0);
 			try {
 				assertThat(outgoingMessage.getBody()).isEqualTo(outgoingMessageBody);
-				assertThat(outgoingMessage.getMessageAttributes().get("JMSMessageID")).isNotNull();
-				assertThat(outgoingMessage.getMessageAttributes().get("JMSMessageID").getDataType()).isEqualTo("String");
-				assertThat(outgoingMessage.getMessageAttributes().get("JMSMessageID").getStringValue()).isEqualTo(jmsMessageID);
+				assertThat(outgoingMessage.getMessageAttributes().get(jmsMessageIdPropertyName)).isNotNull();
+				assertThat(outgoingMessage.getMessageAttributes().get(jmsMessageIdPropertyName).getDataType()).isEqualTo("String");
+				assertThat(outgoingMessage.getMessageAttributes().get(jmsMessageIdPropertyName).getStringValue()).isEqualTo(jmsMessageID);
 			}
 			finally {
 				// clean up
@@ -102,7 +109,7 @@ public class RouteTest {
 			final String replyMessageBody = "Some reply random message body: " + UUID.randomUUID().toString();
 			amazonSQS.sendMessage(new SendMessageRequest()
 					.withQueueUrl(amazonSQS.getQueueUrlFromArn(routeConfiguration.getReplyArn()).getQueueUrl())
-					.addMessageAttributesEntry("JMSCorrelationID", new MessageAttributeValue().withDataType("String").withStringValue(jmsMessageID))
+					.addMessageAttributesEntry(jmsCorrelationIdPropertyName, new MessageAttributeValue().withDataType("String").withStringValue(jmsMessageID))
 					.withMessageBody(replyMessageBody));
 
 			// wait to make sure the message is available on SQS and that this application has picked it up
@@ -119,9 +126,9 @@ public class RouteTest {
 			Message testMessage = receiveTestMessageResult.getMessages().get(0);
 			try {
 				assertThat(testMessage.getBody()).isEqualTo(replyMessageBody);
-				assertThat(testMessage.getMessageAttributes().get("JMSCorrelationID")).isNotNull();
-				assertThat(testMessage.getMessageAttributes().get("JMSCorrelationID").getDataType()).isEqualTo("String");
-				assertThat(testMessage.getMessageAttributes().get("JMSCorrelationID").getStringValue()).isEqualTo(jmsMessageID);
+				assertThat(testMessage.getMessageAttributes().get(jmsCorrelationIdPropertyName)).isNotNull();
+				assertThat(testMessage.getMessageAttributes().get(jmsCorrelationIdPropertyName).getDataType()).isEqualTo("String");
+				assertThat(testMessage.getMessageAttributes().get(jmsCorrelationIdPropertyName).getStringValue()).isEqualTo(jmsMessageID);
 			}
 			finally {
 				// clean up

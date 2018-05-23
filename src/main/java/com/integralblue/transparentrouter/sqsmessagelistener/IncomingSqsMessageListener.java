@@ -35,17 +35,17 @@ public class IncomingSqsMessageListener extends AbstractSqsMessageListener {
 		// the message was received on the routeConfiguration.incomingArn queue
 
 		final String jmsCorrelationId;
-		if (isMessageAttributeValueValidString(message, JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME)) {
-			jmsCorrelationId = message.getMessageAttributes().get(JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		if (isMessageAttributeValueValidString(message, messageAttributeProperties.getJmsCorrelationId())) {
+			jmsCorrelationId = message.getMessageAttributes().get(messageAttributeProperties.getJmsCorrelationId()).getStringValue();
 		}
-		else if (isMessageAttributeValueValidString(message, JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME)) {
-			jmsCorrelationId = message.getMessageAttributes().get(JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		else if (isMessageAttributeValueValidString(message, messageAttributeProperties.getJmsMessageId())) {
+			jmsCorrelationId = message.getMessageAttributes().get(messageAttributeProperties.getJmsMessageId()).getStringValue();
 		}
 		else {
 			jmsCorrelationId = null;
 		}
-		if (jmsCorrelationId != null && isMessageAttributeValueValidString(message, JMS_REPLY_TO_ARN_ATTRIBUTE_NAME)) {
-			final String replyToQueueArn = message.getMessageAttributes().get(JMS_REPLY_TO_ARN_ATTRIBUTE_NAME).getStringValue();
+		if (jmsCorrelationId != null && isMessageAttributeValueValidString(message, messageAttributeProperties.getReplyToQueueArn())) {
+			final String replyToQueueArn = message.getMessageAttributes().get(messageAttributeProperties.getReplyToQueueArn()).getStringValue();
 
 			final PendingReply pendingReply = new PendingReply();
 			pendingReply.setJmsCorrelationId(jmsCorrelationId);
@@ -60,7 +60,7 @@ public class IncomingSqsMessageListener extends AbstractSqsMessageListener {
 			}
 		}
 		else {
-			log.warn("Both of " + JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME + " and " + JMS_REPLY_TO_ARN_ATTRIBUTE_NAME + " message attributes must be present but were not; the message is being forwarded but there is no way to wait for a reply. SQS Message ID: {}", message.getMessageId());
+			log.warn("Both of " + messageAttributeProperties.getJmsMessageId() + " and " + messageAttributeProperties.getReplyToQueueArn() + " message attributes must be present but were not; the message is being forwarded but there is no way to wait for a reply. SQS Message ID: {}", message.getMessageId());
 		}
 		amazonSQS.forwardMessage(message, routeConfiguration.getOutgoingArn());
 		amazonSQS.deleteMessage(
