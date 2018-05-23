@@ -34,19 +34,28 @@ public class IncomingSqsMessageListener extends AbstractSqsMessageListener {
 	public void onMessage(final @NonNull Message message, final @NonNull RouteConfiguration routeConfiguration) {
 		// the message was received on the routeConfiguration.incomingArn queue
 
-		if (isMessageAttributeValueValidString(message, JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME) && isMessageAttributeValueValidString(message, JMS_REPLY_TO_ARN_ATTRIBUTE_NAME)) {
-			final String jmsMessageId = message.getMessageAttributes().get(JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		final String jmsCorrelationId;
+		if (isMessageAttributeValueValidString(message, JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME)) {
+			jmsCorrelationId = message.getMessageAttributes().get(JMS_CORRELATION_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		}
+		else if (isMessageAttributeValueValidString(message, JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME)) {
+			jmsCorrelationId = message.getMessageAttributes().get(JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME).getStringValue();
+		}
+		else {
+			jmsCorrelationId = null;
+		}
+		if (jmsCorrelationId != null && isMessageAttributeValueValidString(message, JMS_REPLY_TO_ARN_ATTRIBUTE_NAME)) {
 			final String replyToQueueArn = message.getMessageAttributes().get(JMS_REPLY_TO_ARN_ATTRIBUTE_NAME).getStringValue();
 
 			final PendingReply pendingReply = new PendingReply();
-			pendingReply.setJmsCorrelationId(jmsMessageId);
+			pendingReply.setJmsCorrelationId(jmsCorrelationId);
 			pendingReply.setReceiveReplyOnQueueArn(routeConfiguration.getReplyArn());
 			pendingReply.setSendReplyToQueueArn(replyToQueueArn);
 			try {
 				pendingReplyRepository.save(pendingReply);
 			}
 			catch (final ConstraintViolationException e) {
-				log.info("Duplicate message received. SQS Message ID: {} " + JMS_MESSAGE_ID_MESSAGE_ATTRIBUTE_NAME + ": {}, " + JMS_REPLY_TO_ARN_ATTRIBUTE_NAME + ": {}", message.getMessageId(), jmsMessageId, replyToQueueArn, e);
+				log.info("Duplicate message received. SQS Message ID: {}, + Message/Correlation ID: {}", message.getMessageId(), jmsCorrelationId, e);
 				return; // do not forward the duplicate message along
 			}
 		}

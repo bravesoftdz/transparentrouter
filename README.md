@@ -7,10 +7,10 @@ Transparent Router for [AWS SQS](https://aws.amazon.com/sqs/) routes messages, i
 
 Transparent Router:
 1. Accept a message on an incoming queue
-1. Records the values of the `JMSMessageID` and `ReplyToQueueArn` message properties
+1. Records the values of the `JMSCorrelationID` (if that's not set, then the `JMSMessageID`) and `ReplyToQueueArn` message properties
 1. Sends that message on an outgoing queue
 1. Receives a message on a reply queue
-1. Looks up the value of the message's `JMSCorrelationID` message property to see where to forward message (using the `JMSMessageID` and `ReplyToQueueArn` of a previously received message)
+1. Looks up the value of the message's `JMSCorrelationID` message property to see where to forward message (using the `JMSMessageID`/`JMSCorrelationID` and `ReplyToQueueArn` of a previously received message)
 1. Sends that message to the `ReplyToQueueArn`
 
 # Running on a Server
