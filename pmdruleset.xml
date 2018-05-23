@@ -10,6 +10,7 @@
 	</rule>
 	<rule ref="category/java/codestyle.xml">
 		<exclude name="AtLeastOneConstructor" />
+		<exclude name="AvoidFinalLocalVariable" />
 		<exclude name="OnlyOneReturn" />
 		<exclude name="LongVariable" />
 	</rule>
