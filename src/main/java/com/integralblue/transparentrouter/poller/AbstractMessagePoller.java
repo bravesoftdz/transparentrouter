@@ -96,6 +96,7 @@ public abstract class AbstractMessagePoller {
 					}
 					catch (final InterruptedException e1) {
 						// ignore this exception - the while loop with either poll again or shuttingDown will be true and the loop will terminate
+						Thread.currentThread().interrupt();
 					}
 				}
 			}
