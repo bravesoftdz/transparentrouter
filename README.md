@@ -1,7 +1,7 @@
 Transparent Router
 =========================================
 
-[![Build Status](https://travis-ci.org/candrews/transparentrouter.svg?branch=master)](https://travis-ci.org/candrews/transparentrouter)
+[![Build Status](https://travis-ci.org/candrews/transparentrouter.svg?branch=master)](https://travis-ci.org/candrews/transparentrouter) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.integralblue%3Atransparentrouter&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.integralblue:transparentrouter)
 
 Transparent Router for [AWS SQS](https://aws.amazon.com/sqs/) routes messages, implementing the [request/reply enterprise integration pattern](http://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReplyJmsExample.html) for services that don't support it and always send replies to a specific queue.
 
